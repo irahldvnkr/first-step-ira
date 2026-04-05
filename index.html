@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Step | A Feature Concept for Groww</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #00c48c;
+  --green-dark: #009e72;
+  --green-deep: #006e50;
+  --green-light: #f0fdf8;
+  --green-mid: #b3f0e0;
+  --cream: #faf9f6;
+  --white: #ffffff;
+  --ink: #181816;
+  --muted: #6b7065;
+  --dim: #a8a89e;
+  --border: #e8e6e0;
+  --amber: #f59e0b;
+  --amber-light: #fffbeb;
+  --amber-border: #fde68a;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --red-border: #fecaca;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+button { touch-action: manipulation; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.groww-wordmark {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green-dark);
+  letter-spacing: -0.3px;
+}
+.feature-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 28px 18px 80px;
+}
+
+.screen { display: none; }
+.screen.active {
+  display: block;
+  animation: screenIn 0.38s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes screenIn {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.progress-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 32px;
+}
+.pseg {
+  height: 3px;
+  flex: 1;
+  background: var(--border);
+  border-radius: 2px;
+  transition: background 0.5s ease;
+}
+.pseg.done   { background: var(--green); }
+.pseg.active { background: var(--green-mid); }
+
+.goal-pill {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  border-radius: 100px;
+  padding: 6px 14px 6px 10px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+.goal-pill.show { display: flex; animation: pillPop 0.3s ease; }
+@keyframes pillPop {
+  from { opacity:0; transform:scale(0.94); }
+  to   { opacity:1; transform:scale(1); }
+}
+.pill-dot {
+  width: 7px; height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: breathe 2.5s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.5; transform:scale(0.75); }
+}
+.pill-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--green-dark);
+  letter-spacing: 0.3px;
+  font-weight: 500;
+}
+
+.step-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 10px;
+}
+.screen-title {
+  font-family: 'Fraunces', serif;
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  margin-bottom: 10px;
+}
+.screen-sub {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 26px;
+}
+
+/* ── INTRO SCREEN ── */
+.intro-hero {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.intro-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(0,196,140,0.08), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.intro-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 14px;
+}
+.intro-title {
+  font-family: 'Fraunces', serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+  margin-bottom: 16px;
+}
+.intro-title em {
+  font-style: italic;
+  color: var(--green-dark);
+}
+.intro-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+.intro-body strong { color: var(--ink); font-weight: 600; }
+.intro-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.intro-stat {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.intro-stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+  margin-bottom: 2px;
+}
+.intro-stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.intro-observation {
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--green-deep);
+  line-height: 1.7;
+}
+.obs-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.how-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.how-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.how-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.how-step:last-child { margin-bottom: 0; }
+.how-num {
+  width: 26px; height: 26px;
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--green-dark);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.how-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+.how-text span { color: var(--muted); font-size: 12px; display: block; margin-top: 2px; }
+
+.safe-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--green-deep);
+  line-height: 1.5;
+}
+.safe-icon { font-size: 16px; flex-shrink: 0; }
+
+/* ── QUIZ ── */
+.q-group { margin-bottom: 22px; }
+.q-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+.q-options { display: flex; flex-direction: column; gap: 7px; }
+.q-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+.q-opt:hover { border-color: var(--green-mid); background: var(--green-light); }
+.q-opt.selected { border-color: var(--green); background: var(--green-light); }
+.q-radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+}
+.q-opt.selected .q-radio {
+  border-color: var(--green);
+  background: var(--green);
+}
+.q-opt.selected .q-radio::after {
+  content: '';
+  width: 6px; height: 6px;
+  background: white;
+  border-radius: 50%;
+}
+.q-opt-label { font-size: 14px; font-weight: 500; line-height: 1.3; }
+.q-opt-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.mismatch-box {
+  display: none;
+  background: var(--amber-light);
+  border: 1px solid var(--amber-border);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 18px;
+  animation: screenIn 0.3s ease;
+}
+.mismatch-box.show { display: block; }
+.mm-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #92400e;
+  margin-bottom: 6px;
+}
+.mm-body { font-size: 13px; color: #78350f; line-height: 1.65; }
+.mm-why {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--amber-border);
+  font-size: 12px;
+  color: #78350f;
+  line-height: 1.65;
+}
+.mm-why.open { display: block; }
+.mm-toggle {
+  background: none;
+  border: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #92400e;
+  cursor: pointer;
+  margin-top: 8px;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── ASSETS ── */
+.asset-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+.asset-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.asset-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+}
+.asset-card:hover { border-color: var(--green-mid); box-shadow: var(--shadow-sm); }
+.asset-card.selected { border-color: var(--green); background: var(--green-light); }
+.asset-card.warning { border-color: var(--border); }
+.asset-card.warning:hover { border-color: var(--green-mid); box-shadow: var(--shadow-sm); }
+.asset-card.strong-warning { border-color: var(--border); background: var(--white); }
+.asset-card.strong-warning:hover { border-color: var(--green-mid); box-shadow: var(--shadow-sm); }
+
+.asset-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.asset-icon-wrap {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.asset-header-info { flex: 1; min-width: 0; }
+.asset-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.asset-type-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+}
+.asset-check-wrap {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s;
+}
+.asset-card.selected .asset-check-wrap {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+  font-size: 11px;
+}
+
+.asset-example {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 12px;
+  margin-bottom: 9px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.asset-card.selected .asset-example {
+  background: rgba(255,255,255,0.6);
+}
+.example-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.example-text {
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.example-text em { color: var(--muted); font-style: normal; font-size: 11px; display: block; margin-top: 2px; }
+
+.asset-desc-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+.asset-context-line {
+  font-size: 11px;
+  line-height: 1.5;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.asset-context-line.warn { color: var(--muted); border-top-color: var(--border); }
+.asset-context-line.strong-warn { color: var(--muted); border-top-color: var(--border); }
+
+.risk-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.risk-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.risk-low  { background: #dcfce7; color: #15803d; }
+.risk-mid  { background: #fef9c3; color: #a16207; }
+.risk-high { background: #fee2e2; color: #b91c1c; }
+
+.alloc-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: none;
+}
+.alloc-box.show { display: block; }
+.alloc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.alloc-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+.alloc-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--green-dark);
+}
+.alloc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.alloc-row:last-child { border-bottom: none; }
+.alloc-name { flex: 1; color: var(--ink); }
+.alloc-track {
+  width: 70px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.alloc-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.alloc-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--green-dark);
+  width: 30px;
+  text-align: right;
+}
+
+/* ── SIMULATION ── */
+.snapshot-nav {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.snap-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.snap-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+  font-weight: 600;
+}
+.snap-btn.done {
+  background: var(--green-light);
+  border-color: var(--green-mid);
+  color: var(--green-dark);
+}
+
+.portfolio-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.port-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.port-value {
+  font-family: 'Fraunces', serif;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  margin-bottom: 4px;
+}
+.port-change {
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.port-change.up { color: var(--green-dark); }
+.port-change.down { color: var(--red); }
+.port-change.flat { color: var(--muted); }
+
+.holdings { display: flex; flex-direction: column; gap: 8px; }
+.holding-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: var(--cream);
+}
+.h-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.h-name { font-size: 12px; font-weight: 500; }
+.h-sub { font-size: 11px; color: var(--muted); }
+.h-ret { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; margin-left: auto; }
+.h-ret.up { color: var(--green-dark); }
+.h-ret.down { color: var(--red); }
+.h-ret.flat { color: var(--muted); }
+
+.insight-card {
+  background: var(--ink);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.insight-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 8px;
+}
+.insight-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+}
+
+.decision-section {
+  margin-bottom: 18px;
+}
+.decision-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.decision-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.dec-btn {
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+}
+.dec-btn:focus { outline: none; }
+.dec-btn span {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.dec-btn:hover { border-color: var(--green-mid); }
+.dec-btn.stay.chosen   { background: var(--green); border-color: var(--green); color: white; }
+.dec-btn.stay.chosen span { color: rgba(255,255,255,0.7); }
+.dec-btn.hold.chosen   { background: var(--ink); border-color: var(--ink); color: white; }
+.dec-btn.hold.chosen span { color: rgba(255,255,255,0.7); }
+.dec-btn.withdraw.chosen { background: var(--amber-light); border-color: var(--amber-border); color: #92400e; }
+.dec-btn.withdraw.chosen span { color: #a16207; }
+.dec-btn.buy.chosen { background: var(--green-light); border-color: var(--green-mid); color: var(--green-deep); }
+.dec-btn.buy.chosen span { color: var(--green-dark); }
+
+.hold-note {
+  background: var(--green-light);
+  border: 1px solid var(--green-mid);
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--green-deep);
+  line-height: 1.5;
+  margin-top: 10px;
+  display: none;
+}
+.hold-note.show { display: block; }
+
+.next-snap-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 12px;
+  display: none;
+  letter-spacing: -0.1px;
+}
+.next-snap-btn.show { display: block; animation: screenIn 0.25s ease; }
+.next-snap-btn:hover { background: #2a2a26; transform: translateY(-1px); }
+
+/* ── REVEAL ── */
+.reveal-hero {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.reveal-behaviour {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+  margin-bottom: 18px;
+}
+.reveal-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 18px;
+}
+.reveal-return-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.reveal-amount {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 6px;
+  transition: font-size 0.2s ease;
+}
+.reveal-amount.is-negative {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--muted) !important;
+  letter-spacing: -1px;
+}
+.reveal-context {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.reveal-goal-box {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+.reveal-goal-box strong { color: var(--green-dark); }
+
+.reframe-card {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+.reframe-card.show { display: block; }
+.reframe-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.reframe-text {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.7;
+}
+.reframe-text strong { color: var(--ink); font-weight: 600; }
+
+.decisions-recap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.recap-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+.recap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.recap-row:last-child { border-bottom: none; }
+.recap-snap { color: var(--muted); }
+.recap-choice {
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+.recap-choice.stay   { color: var(--green-dark); }
+.recap-choice.hold   { color: var(--ink); }
+.recap-choice.buy    { color: var(--green-dark); }
+.recap-choice.withdraw { color: #92400e; }
+
+.disclaimer-box {
+  background: var(--amber-light);
+  border: 1px solid var(--amber-border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #78350f;
+  line-height: 1.65;
+}
+.disclaimer-box strong {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 5px;
+  color: #92400e;
+}
+
+.cta-card {
+  background: var(--ink);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.cta-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  color: var(--white);
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+.cta-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+/* ── PRODUCT THINKING (end section) ── */
+.pt-section {
+  margin-top: 52px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.pt-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+.pt-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
+.pt-byline {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 28px;
+  font-family: 'DM Mono', monospace;
+}
+.pt-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.pt-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), transparent);
+}
+.pt-card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+.pt-card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.pt-card-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.pt-card-body strong { color: var(--ink); font-weight: 600; }
+.pt-honest {
+  background: var(--amber-light);
+  border: 1px solid var(--amber-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-top: 10px;
+}
+.pt-honest-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+.pt-honest-body { font-size: 13px; color: #78350f; line-height: 1.7; }
+.pt-honest-body strong { color: #92400e; font-weight: 600; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  touch-action: manipulation;
+  width: 100%;
+  padding: 15px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: -0.1px;
+}
+.btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,196,140,0.3); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { background: var(--border); color: var(--dim); cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost {
+  touch-action: manipulation;
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 8px;
+}
+.btn-ghost:hover { border-color: var(--green-mid); color: var(--green-dark); }
+.btn-cta-white {
+  width: 100%;
+  padding: 15px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-cta-white:hover { background: var(--green-dark); }
+.spacer { height: 10px; }
+
+footer {
+  text-align: center;
+  margin-top: 48px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 1.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="groww-wordmark">groww</span>
+  <span class="feature-badge">First Step · Concept</span>
+</div>
+
+<div class="container">
+
+<!-- SCREEN 0 · INTRO -->
+<div class="screen active" id="s-intro">
+
+  <div class="intro-hero">
+    <div class="intro-eyebrow">A feature concept · by Ira Haldavanekar</div>
+    <div class="intro-title">What does investing <em>feel</em> like?</div>
+    <div class="intro-body">
+      63% of Indian households are aware of at least one securities market product. Only 9.5% actually invest. The gap is not information.
+      <strong>It is the emotional distance between understanding something and doing it with real money.</strong>
+      <span style="display:block;font-size:11px;color:var(--dim);margin-top:6px;font-family:'DM Mono',monospace;letter-spacing:0.3px;">SEBI Investor Survey, 2025</span>
+    </div>
+
+    <div class="intro-stat-row">
+      <div class="intro-stat">
+        <div class="intro-stat-num">13.2Cr</div>
+        <div class="intro-stat-label">Groww active investors, Dec 2024 <span style="display:block;font-size:10px;color:var(--dim);margin-top:2px;">Source: Inc42, Jan 2025</span></div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">94%</div>
+        <div class="intro-stat-label">of non-investors affected by risk and return uncertainty <span style="display:block;font-size:10px;color:var(--dim);margin-top:2px;">Source: SEBI Investor Survey, 2025</span></div>
+      </div>
+    </div>
+
+    <div class="intro-observation">
+      <div class="obs-label">A personal observation</div>
+      I've noticed something at my economics college: most women I know understand investing well enough to ask the right questions, and most of them haven't started yet. Women make up only 1 in 4 individual mutual fund investors in India (AMFI, 2024). From what I've seen, the gap isn't knowledge. It's a quiet intimidation that turns into inaction. The industry rarely addresses it directly, and platforms that rely on push notifications and content can actually amplify the anxiety rather than reduce it.
+    </div>
+  </div>
+
+  <div class="how-card">
+    <div class="how-title">What happens in this simulation</div>
+    <div class="how-step">
+      <div class="how-num">1</div>
+      <div class="how-text">Answer three quick questions about your goal<span>No right or wrong answers. This just personalises the simulation for you.</span></div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">2</div>
+      <div class="how-text">Build a pretend portfolio of Rs. 10,000<span>Choose from real asset types. No actual money involved. This is a learning simulation.</span></div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">3</div>
+      <div class="how-text">Watch it move through real past market data<span>Five moments from history. At each one, you decide: buy more, hold, or step out.</span></div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">4</div>
+      <div class="how-text">See what your choices reveal about how you invest<span>The return number matters less than the decisions you made along the way.</span></div>
+    </div>
+  </div>
+
+  <div class="safe-note">
+    <span class="safe-icon">🔒</span>
+    <span>No real money. No account needed. This is a simulation. You're learning, not investing.</span>
+  </div>
+
+  <button class="btn-primary" onclick="goTo('s-quiz')">Start the simulation →</button>
+
+</div>
+
+<!-- SCREEN 1 · QUIZ -->
+<div class="screen" id="s-quiz">
+
+  <div class="progress-row">
+    <div class="pseg active"></div>
+    <div class="pseg"></div>
+    <div class="pseg"></div>
+    <div class="pseg"></div>
+  </div>
+
+  <div class="step-tag">Step 1 of 4</div>
+  <div class="screen-title">Before we begin,<br>tell us your why.</div>
+  <div class="screen-sub">Your goal anchors everything that follows. There are no wrong answers here.</div>
+
+  <div class="q-group">
+    <div class="q-label">What are you saving for?</div>
+    <div class="q-options">
+      <div class="q-opt" data-g="goal" data-v="long-term" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">Long-term wealth</div>
+          <div class="q-opt-sub">Building financial security over many years</div>
+        </div>
+      </div>
+      <div class="q-opt" data-g="goal" data-v="milestone" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">A specific milestone</div>
+          <div class="q-opt-sub">A house, a car, a trip, something real with a timeline</div>
+        </div>
+      </div>
+      <div class="q-opt" data-g="goal" data-v="short-term" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">Short-term saving</div>
+          <div class="q-opt-sub">Growing money I may need within the next year</div>
+        </div>
+      </div>
+      <div class="q-opt" data-g="goal" data-v="explore" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">I just want to understand investing</div>
+          <div class="q-opt-sub">No pressure. I'm curious and want to see how it works</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-group">
+    <div class="q-label">How do you feel about risk?</div>
+    <div class="q-options">
+      <div class="q-opt" data-g="risk" data-v="conservative" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">I want to keep my money safe</div>
+          <div class="q-opt-sub">Lower returns are fine if my capital is protected</div>
+        </div>
+      </div>
+      <div class="q-opt" data-g="risk" data-v="moderate" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">I can handle some ups and downs</div>
+          <div class="q-opt-sub">I understand markets move, that's okay</div>
+        </div>
+      </div>
+      <div class="q-opt" data-g="risk" data-v="growth" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div>
+          <div class="q-opt-label">I want strong growth</div>
+          <div class="q-opt-sub">Higher risk is acceptable if the potential is there</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-group">
+    <div class="q-label">How long can you leave the money invested?</div>
+    <div class="q-options">
+      <div class="q-opt" data-g="horizon" data-v="short" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div><div class="q-opt-label">Less than a year</div></div>
+      </div>
+      <div class="q-opt" data-g="horizon" data-v="mid" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div><div class="q-opt-label">One to three years</div></div>
+      </div>
+      <div class="q-opt" data-g="horizon" data-v="long" onclick="selectQ(this)">
+        <div class="q-radio"></div>
+        <div><div class="q-opt-label">More than three years</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mismatch-box" id="mismatch-box">
+    <div class="mm-label">⚠ Worth knowing before you continue</div>
+    <div class="mm-body">You've said you want to build long-term wealth, but you can only leave money invested for under a year. These two things work against each other.</div>
+    <button class="mm-toggle" onclick="toggleMismatchDetail()">Here's why ↓</button>
+    <div class="mm-why" id="mm-detail">
+      Long-term investing strategies depend on time to recover from short-term volatility. The Nifty 50 fell 38% in early 2020 and recovered fully within 6 months, but only for investors who stayed in. If you need the money back within a year, a dip right before your withdrawal could lock in that loss. The assets shown in the next step will reflect your actual time horizon.
+    </div>
+  </div>
+
+  <button class="btn-primary" id="quiz-next" onclick="goToAssets()" disabled>Continue</button>
+
+</div>
+
+<!-- SCREEN 2 · ASSETS -->
+<div class="screen" id="s-assets">
+
+  <div class="progress-row">
+    <div class="pseg done"></div>
+    <div class="pseg active"></div>
+    <div class="pseg"></div>
+    <div class="pseg"></div>
+  </div>
+
+  <div class="goal-pill show" id="pill-assets">
+    <div class="pill-dot"></div>
+    <span class="pill-text" id="pill-assets-text">Your goal</span>
+  </div>
+
+  <div class="step-tag">Step 2 of 4</div>
+  <div class="screen-title">Pick what to include<br>in your portfolio.</div>
+  <div class="screen-sub">Assets shown match your profile. Select at least two to build your simulation portfolio of Rs. 10,000.</div>
+
+  <div class="asset-section-label" id="rec-label">Closer to your profile</div>
+  <div class="asset-list" id="recommended-assets"></div>
+
+  <div class="asset-section-label" id="other-label" style="margin-top:4px;">Other options</div>
+  <div class="asset-list" id="extra-assets"></div>
+
+  <div class="alloc-box" id="alloc-box">
+    <div class="alloc-header">
+      <div class="alloc-title">Your allocation</div>
+      <div class="alloc-total">Rs. 10,000</div>
+    </div>
+    <div id="alloc-rows"></div>
+    <div id="alloc-hint" style="display:none; font-size:12px; color:var(--muted); margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">Pick one more asset to start the simulation.</div>
+  </div>
+
+  <button class="btn-primary" id="assets-next" onclick="goToSim()" disabled>Start simulation →</button>
+
+</div>
+
+<!-- SCREEN 3 · SIMULATION -->
+<div class="screen" id="s-sim">
+
+  <div class="progress-row">
+    <div class="pseg done"></div>
+    <div class="pseg done"></div>
+    <div class="pseg active"></div>
+    <div class="pseg"></div>
+  </div>
+
+  <div class="goal-pill show" id="pill-sim">
+    <div class="pill-dot"></div>
+    <span class="pill-text" id="pill-sim-text">Your goal</span>
+  </div>
+
+  <div class="step-tag">Step 3 of 4</div>
+  <div class="screen-title" id="sim-title">Watch your portfolio move.</div>
+  <div class="screen-sub" id="sim-sub">Five snapshots across real market data. At each snapshot, decide: buy more, hold, or step out.</div>
+  <div class="screen-sub" id="sim-period-note" style="margin-top:-14px; font-size:12px; color:var(--green-dark); font-family:'DM Mono',monospace; letter-spacing:0.3px;"></div>
+
+  <div class="snapshot-nav" id="snap-nav"></div>
+
+  <div class="portfolio-card">
+    <div class="port-label">Portfolio value</div>
+    <div class="port-value" id="port-value">Rs. 10,000</div>
+    <div class="port-change flat" id="port-change">Simulation starting</div>
+    <div class="holdings" id="holdings"></div>
+  </div>
+
+  <div class="insight-card">
+    <div class="insight-tag">What's happening</div>
+    <div class="insight-text" id="insight-text">—</div>
+  </div>
+
+  <div class="decision-section">
+    <div class="decision-label">Your decision for this snapshot</div>
+    <div class="decision-row">
+      <button class="dec-btn buy" onclick="decide('buy')">
+        Buy more
+        <span>Add to position</span>
+      </button>
+      <button class="dec-btn hold" onclick="decide('hold')">
+        Hold
+        <span>Stay as is</span>
+      </button>
+      <button class="dec-btn withdraw" onclick="decide('withdraw')">
+        Step out
+        <span>Exit for now</span>
+      </button>
+    </div>
+    <div class="hold-note" id="hold-note">
+      Most investors find doing nothing the hardest option. That instinct is worth noticing.
+    </div>
+    <button class="next-snap-btn" id="next-snap-btn" onclick="advanceSnap()">Next snapshot →</button>
+  </div>
+
+  <button class="btn-primary" id="sim-next" onclick="goToReveal()" disabled style="margin-top:4px;">See your results →</button>
+
+</div>
+
+<!-- SCREEN 4 · REVEAL -->
+<div class="screen" id="s-reveal">
+
+  <div class="progress-row">
+    <div class="pseg done"></div>
+    <div class="pseg done"></div>
+    <div class="pseg done"></div>
+    <div class="pseg active"></div>
+  </div>
+
+  <div class="goal-pill show" id="pill-reveal">
+    <div class="pill-dot"></div>
+    <span class="pill-text" id="pill-reveal-text">Your goal</span>
+  </div>
+
+  <div class="step-tag">Step 4 of 4</div>
+  <div class="screen-title">Here's what happened.</div>
+
+  <div class="reveal-hero">
+    <div class="reveal-behaviour" id="reveal-behaviour">You stayed through all 5 snapshots.</div>
+    <div class="reveal-divider"></div>
+    <div class="reveal-return-label">Your simulation returned</div>
+    <div class="reveal-amount" id="reveal-amount">—</div>
+    <div class="reveal-context" id="reveal-context"></div>
+    <div class="reveal-goal-box" id="reveal-goal-box"></div>
+    <div class="reframe-card" id="reframe-card">
+      <div class="reframe-label">What this actually means</div>
+      <div class="reframe-text" id="reframe-text"></div>
+    </div>
+  </div>
+
+  <div class="decisions-recap">
+    <div class="recap-title">Your decisions</div>
+    <div id="recap-rows"></div>
+  </div>
+
+  <div class="disclaimer-box">
+    <strong>Important</strong>
+    This simulation uses approximate historical market data. Past performance is not an indicator of future results. This is a learning tool, not investment advice or a prediction of future returns. Always verify data independently before making investment decisions.
+  </div>
+
+  <div class="cta-card">
+    <div class="cta-title">Ready for the real thing?</div>
+    <div class="cta-sub">You just made five decisions with a real market period. You watched your portfolio move. That is the hardest part of investing. You already did it.</div>
+    <button class="btn-cta-white" onclick="alert('In the real product: this opens Groww\'s investment flow, pre-filled with the asset mix from your simulation.')">Start with Rs. 500 on Groww</button>
+  </div>
+
+  <!-- PRODUCT THINKING · END SECTION -->
+  <div class="pt-section">
+    <div class="pt-eyebrow">Behind the build</div>
+    <div class="pt-title">Product thinking</div>
+    <div class="pt-byline">by Ira Haldavanekar · <a href="https://irahaldavanekar.substack.com/p/first-step-a-feature-concept-for" target="_blank" style="color:var(--green-dark); text-decoration:underline; text-underline-offset:2px;">Full write-up on Substack</a></div>
+
+    <div class="pt-card">
+      <div class="pt-card-num">01 · The problem this is solving</div>
+      <div class="pt-card-title">Temporal asymmetry, not information deficit</div>
+      <div class="pt-card-body">
+        SEBI's 2025 Investor Survey found that 94% of non-investors are affected by risk and return uncertainty, and 95% struggle with product complexity and information gaps. But 63% of households are already aware of securities products. The information is reaching people. <strong>First Step is built around a different insight: the barrier is the emotional distance between understanding investing and doing it with real money, not the absence of knowledge.</strong>
+      </div>
+    </div>
+
+    <div class="pt-card">
+      <div class="pt-card-num">02 · The decision mechanics</div>
+      <div class="pt-card-title">Why buy/hold/step out, and why holding is surfaced explicitly</div>
+      <div class="pt-card-body">
+        The original version used stay/withdraw only. Adding buy and hold makes the simulation more behaviourally honest, real investors have three options, not two. <strong>Hold is explicitly noted as a valid, active decision</strong> because first-time investors often feel that doing nothing is wrong. It isn't. Surfacing that message at the moment of decision is where the real learning happens.
+      </div>
+    </div>
+
+    <div class="pt-card">
+      <div class="pt-card-num">03 · What we decided not to build</div>
+      <div class="pt-card-title">Leaderboards. Social sharing. A bull market period.</div>
+      <div class="pt-card-body">
+        Any competitive element shifts the frame from personal learning to performance comparison. Social sharing of returns invites judgment. A period where everything goes up teaches nothing real. <strong>Volatility and asset divergence are what build genuine investing intuition.</strong>
+      </div>
+    </div>
+
+    <div class="pt-card">
+      <div class="pt-card-num">04 · How to evaluate if this worked</div>
+      <div class="pt-card-title">One primary metric</div>
+      <div class="pt-card-body">
+        <strong>Do users who complete First Step convert to a first real investment at a higher rate than users who go through Groww's existing onboarding?</strong> If completion is high but conversion is flat, the bridge to real investment is broken. If completion itself is low, the simulation isn't compelling enough, fix that first.
+      </div>
+    </div>
+
+    <div class="pt-card">
+      <div class="pt-card-num">05 · Negative returns without demotivation</div>
+      <div class="pt-card-title">Smaller number. Contextualised explanation. Not a recommendation.</div>
+      <div class="pt-card-body">
+        Negative returns are shown smaller and in muted grey, not red, so the number doesn't dominate. A reframe card then appears explaining what that result actually means in the context of the user's goal and the specific historical period. This is not advice. <strong>It is retrospective pattern explanation: historical facts about what happened in that market period and why a negative result in that context means something different from what it feels like.</strong>
+      </div>
+    </div>
+
+    <div class="pt-honest">
+      <div class="pt-honest-label">What I'm genuinely uncertain about</div>
+      <div class="pt-honest-body">
+        Whether 5 snapshots is the right number. Whether Rs. 500 is the right CTA anchor, it's a hypothesis, only user research will find the real number. And whether the <strong>Nervous Restarter</strong>, someone who invested once, lost money, and stopped, responds differently to a down-market simulation than a first-timer. They may need their own variant with an explicit recovery arc.
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <button class="btn-ghost" onclick="restart()">Start over</button>
+</div>
+
+</div><!-- /container -->
+
+<!-- GLOBAL FOOTER STRIP, visible on all screens -->
+<div style="
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 14px 20px;
+  text-align: center;
+  margin-top: 0;
+">
+  <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:7px;">First Step · A feature concept for Groww · Ira Haldavanekar</div>
+  <div style="font-size:12px; color:var(--muted); line-height:1.9;">
+    Read the full write-up on
+    <a href="https://irahaldavanekar.substack.com/p/first-step-a-feature-concept-for" target="_blank" style="color:var(--green-dark); text-decoration:underline; text-underline-offset:2px;">Substack</a>
+  </div>
+  <div style="font-size:12px; color:var(--muted); line-height:1.9;">
+    Connect:
+    <a href="https://www.linkedin.com/in/ira-haldavanekar-59312433b/" target="_blank" style="color:var(--green-dark); text-decoration:underline; text-underline-offset:2px;">LinkedIn</a>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────
+// STATE
+// ─────────────────────────────────────
+const quiz = { goal: null, risk: null, horizon: null };
+let selectedAssets = [];
+let currentSnap = 0;
+let decisions = {};
+let snapLabels = [];
+let simPeriod = null;
+
+// ─────────────────────────────────────
+// ASSET DEFINITIONS
+// ─────────────────────────────────────
+const ASSETS = {
+  nifty: {
+    id: 'nifty',
+    icon: '📈', iconBg: '#e8faf5',
+    name: 'Nifty 50 Index Fund',
+    type: 'Large-cap index · Passive',
+    risk: 'low',
+    desc: 'Tracks India\'s 50 largest listed companies. Returns mirror the index, no fund manager, no stock picking.',
+    example: 'Think of it as owning a tiny slice of every company from Reliance to TCS to HDFC Bank, all at once.',
+    exampleSub: 'If India\'s biggest companies grow, so does this fund.',
+    contexts: {
+      'long-term|conservative': 'Over 10-year periods in India, the Nifty 50 has historically delivered positive returns despite short-term corrections. Individual years have varied significantly.',
+      'long-term|moderate': 'The Nifty 50 fell approximately 38% during COVID (Feb–Mar 2020) and recovered to pre-crash levels within 6 months. Recovery timelines vary.',
+      'long-term|growth': 'Large-cap index funds have lower return ceilings than mid-cap or sectoral funds historically, but also lower drawdowns during corrections.',
+      'milestone|conservative': 'For goals 2+ years away, index funds have historically had time to recover from short-term dips. For goals under 2 years, timing risk increases.',
+      'milestone|moderate': 'Historically, the Nifty 50 has delivered positive returns over any 5-year period in Indian market history.',
+      'milestone|growth': 'Historically, active funds have sometimes outperformed and sometimes underperformed the Nifty 50 over 5-year periods.',
+      'explore|any': 'The Nifty 50 is the most commonly cited benchmark for Indian equity markets. Most actively managed funds are measured against whether they beat or underperform it.',
+      'short-term|moderate|warn': '⚠ Equity index funds have historically needed 2–3 years to recover from significant corrections. A 1–3 year horizon carries meaningful timing risk.',
+      'short-term|growth|strong-warn': '⚠ The Nifty 50 has experienced drawdowns of 20–38% in a single year (2008, 2020). For money needed within 12 months, timing risk is significant.',
+    }
+  },
+  midcap: {
+    id: 'midcap',
+    icon: '⚖️', iconBg: '#fef9c3',
+    name: 'A mid-cap mutual fund',
+    type: 'Mid-cap equity · Actively managed',
+    risk: 'mid',
+    desc: 'Actively managed fund investing in India\'s medium-sized listed companies. A fund manager decides what to buy and sell.',
+    example: 'Think of companies like Voltas, Trent, or Godrej Properties, established enough to be stable, small enough to still grow fast.',
+    exampleSub: 'Higher upside potential than large-caps, but more volatile.',
+    contexts: {
+      'long-term|moderate': 'Mid-cap funds in India have historically outperformed large-cap funds over 7–10 year periods, with significantly higher short-term swings.',
+      'long-term|growth': 'Active mid-cap funds carry fund manager risk in addition to market risk, manager decisions affect returns beyond what the market does.',
+      'milestone|moderate': 'With 3+ years to a milestone, mid-cap funds have historically had time to recover from corrections. Performance varies significantly across fund managers.',
+      'milestone|growth': 'Mid-cap funds can experience 40–50% drawdowns in bear markets. They have also historically delivered 18–22% CAGR over 10-year periods. Both facts are simultaneously true.',
+      'explore|moderate': 'In October 2024, mid-cap funds fell more sharply than Nifty 50. This shows what the difference between large-cap and mid-cap exposure looks like in practice.',
+      'explore|growth': 'The difference between this fund and the Nifty 50 in the same period illustrates what active management and higher concentration risk look like.',
+      'short-term|moderate|warn': '⚠ Mid-cap funds are typically recommended for 5+ year horizons. A 1–3 year window may not be enough to recover from a correction.',
+    }
+  },
+  gold: {
+    id: 'gold',
+    icon: '🥇', iconBg: '#fef3c7',
+    name: 'Gold ETF',
+    type: 'Commodity · Passive',
+    risk: 'low',
+    desc: 'Tracks the price of physical gold. Bought and sold like a stock, no physical storage, no making charges.',
+    example: 'Same as buying gold, except it\'s stored digitally. Price moves with international gold markets and the INR/USD exchange rate.',
+    exampleSub: 'Often moves in the opposite direction from equity markets.',
+    contexts: {
+      'any|conservative': 'Gold has historically moved independently of equity markets. In October 2024, gold rose approximately 2% while most Indian equity indices fell.',
+      'any|moderate': 'Gold does not generate income (no dividends, no interest). Returns come only from price appreciation. It has historically acted as a hedge during equity downturns.',
+      'any|growth': 'Over 20-year periods, gold has delivered positive returns in India, though equity has historically outperformed it. Gold\'s role in growth portfolios is typically as a volatility buffer.',
+      'short-term|any': 'Gold prices can be volatile in the short term, influenced by global events and currency movements. It is not capital-guaranteed.',
+      'explore|any': 'In this simulation, gold is the only asset that ended October 2024 in positive territory. That is not always the case, but it illustrates why investors hold it alongside equity.',
+    }
+  },
+  tech: {
+    id: 'tech',
+    icon: '💻', iconBg: '#ede9fe',
+    name: 'A technology sectoral fund',
+    type: 'Sector fund · Actively managed',
+    risk: 'high',
+    desc: 'Invests only in technology companies. No diversification across sectors, returns depend heavily on the technology sector specifically.',
+    example: 'Think: a fund holding Infosys, TCS, Wipro, HCL, and global tech companies like Apple. All tech, nothing else.',
+    exampleSub: 'When tech does well, this soars. When tech falls, there\'s nothing else to cushion it.',
+    contexts: {
+      'long-term|growth': 'Technology sectoral funds can deliver significantly higher returns than diversified funds during tech bull markets. The 2022 global tech selloff saw many such funds drop 40–60%.',
+      'milestone|growth': 'Sector cycles can last 3–5 years. A fund concentrated in technology will not recover at the same rate as a diversified fund if the sector is out of favour.',
+      'explore|growth': 'In October 2024, this fund category fell more sharply than both Nifty 50 and mid-cap funds. This shows what concentration in a single sector looks like.',
+      'explore|moderate': 'Sectoral funds carry higher risk than diversified funds because there is no buffer from other sectors when technology underperforms.',
+    }
+  },
+  liquid: {
+    id: 'liquid',
+    icon: '🏦', iconBg: '#f0f9ff',
+    name: 'A liquid fund',
+    type: 'Debt · Very short-term',
+    risk: 'low',
+    desc: 'Invests in very short-term government securities and high-quality corporate debt, typically maturing within 91 days.',
+    example: 'Think of it as a smarter savings account, your money earns slightly more than an FD but you can withdraw almost any day.',
+    exampleSub: 'Capital preservation is the goal, not growth.',
+    contexts: {
+      'short-term|conservative': 'Liquid funds have historically delivered returns slightly above savings account rates. They have had very few instances of negative returns over any 30-day period.',
+      'short-term|moderate': 'Liquid funds prioritise stability over returns. Their purpose is to preserve capital while keeping money accessible.',
+      'explore|any': 'Liquid funds exist at the lowest end of the risk spectrum for market-linked instruments. Seeing how they behave compared to equity shows the full range of what investing covers.',
+    }
+  },
+  debt: {
+    id: 'debt',
+    icon: '📋', iconBg: '#f8fafc',
+    name: 'A short-duration debt fund',
+    type: 'Debt · 1–3 year bonds',
+    risk: 'low',
+    desc: 'Invests in bonds and debt instruments maturing within 1–3 years. More return potential than a liquid fund, with some exposure to interest rate changes.',
+    example: 'Think of it as lending money to high-quality companies and the government for 1–3 years in exchange for regular interest payments.',
+    exampleSub: 'Quiet, steady returns. Not correlated to stock markets.',
+    contexts: {
+      'short-term|conservative': 'Short-duration debt funds carry interest rate risk, when rates rise, bond prices fall temporarily. Over a 1–3 year hold period, this risk has historically been manageable.',
+      'short-term|moderate': 'These funds sit between liquid funds and equity in risk and return. They do not protect against equity market swings but are not correlated to them either.',
+      'explore|any': 'Debt funds are often overlooked by first-time investors focused on equity. This simulation includes one to show how a non-equity instrument behaves in the same market environment.',
+    }
+  },
+  reliance: {
+    id: 'reliance',
+    icon: '🏭', iconBg: '#fee2e2',
+    name: 'Reliance Industries',
+    type: 'Individual stock · Large-cap',
+    risk: 'mid',
+    desc: 'India\'s largest listed company by market cap. Businesses span oil refining, retail (JioMart), and telecom (Jio).',
+    example: 'One stock, but one that covers energy, retail, and telecom all at once. When you buy this, you\'re betting on all three businesses simultaneously.',
+    exampleSub: 'No built-in diversification. One company\'s quarter affects your entire position.',
+    contexts: {
+      'long-term|growth': 'Individual stocks have no built-in diversification. A single quarter of weak results affects the entire position. Reliance has also been one of India\'s best-performing stocks over 20 years, both facts are relevant.',
+      'milestone|growth': 'Reliance\'s stock price is influenced by oil prices, consumer retail performance, and telecom subscriber growth simultaneously.',
+      'explore|any': 'Watching Reliance versus the Nifty 50 in the same period shows concretely what single-stock risk looks like compared to holding all 50 companies at once.',
+      'warn': '⚠ Individual stocks can move significantly more than diversified funds. Reliance fell approximately 12% in a single month during the 2020 COVID crash. For a conservative or short-horizon goal, individual stocks carry timing risk that funds buffer.',
+    }
+  },
+  infosys: {
+    id: 'infosys',
+    icon: '🖥️', iconBg: '#dbeafe',
+    name: 'Infosys',
+    type: 'Individual stock · IT services',
+    risk: 'mid',
+    desc: 'India\'s second-largest IT services company. Revenue is primarily in US dollars, costs in Indian rupees.',
+    example: 'Think: a company whose fortunes are tied to whether global tech companies are hiring, what the dollar-rupee rate is doing, and US visa policies for tech workers.',
+    exampleSub: 'Different risk drivers from a domestic company like Reliance, useful to compare the two.',
+    contexts: {
+      'long-term|growth': 'IT services stocks are sensitive to global technology spending cycles, visa regulations, and the dollar-rupee rate, different risk drivers from domestic companies like Reliance.',
+      'milestone|growth': 'Comparing Infosys to Reliance in the same simulation shows two blue-chip Indian companies with entirely different risk drivers.',
+      'explore|any': 'Infosys and Reliance are both Nifty 50 constituents, both are inside the index fund. Watching them individually versus the index shows why diversification smooths out company-specific movements.',
+      'warn': '⚠ IT stocks in India fell significantly during the 2022 global tech correction, Infosys dropped approximately 30% over that year. Individual stocks carry concentration risk that index funds do not.',
+    }
+  },
+};
+
+// ─────────────────────────────────────
+// SIMULATION DATA
+// ─────────────────────────────────────
+const SIM_LONGTERM = {
+  period: 'longterm',
+  label: 'January 2020 – January 2024',
+  snaps: ['Jan 2020','Jan 2021','Jan 2022','Jan 2023','Jan 2024'],
+  insights: [
+    'January 2020: Markets are near all-time highs. No one yet knows what the next two months will bring. This is what markets look like before a crisis, normal.',
+    'January 2021: After a 38% crash in March 2020, markets have fully recovered and set new highs. Investors who stayed in recovered everything. Investors who sold in panic locked in their losses permanently.',
+    'January 2022: Markets hit a new peak. The bull run that began in April 2020 has now lasted almost two years. Long-term investors who bought during the crash are significantly ahead.',
+    'January 2023: 2022 was a difficult year globally. Rising interest rates and geopolitical uncertainty caused a correction. Most diversified Indian portfolios are down from their 2022 peak but still ahead of 2020 levels.',
+    'January 2024: Markets have recovered from the 2022–23 correction and set new records. A patient investor who started in January 2020 and stayed through the COVID crash, the recovery, the 2022 correction, and back, is significantly ahead.',
+  ],
+  returns: {
+    nifty:    [0, -8.5, 18.5, 12.1, 8.2],
+    midcap:   [0, -10.2, 24.3, 14.5, 9.8],
+    gold:     [0, 6.8, 8.2, 3.1, 10.5],
+    tech:     [0, -12.1, 32.5, -8.5, 11.2],
+    reliance: [0, -15.3, 28.4, 6.8, 12.1],
+    infosys:  [0, -8.9, 45.2, -18.5, 5.4],
+    liquid:   [0, 1.8, 2.1, 3.8, 4.2],
+    debt:     [0, 3.2, 4.1, 2.8, 5.1],
+  }
+};
+
+const SIM_SHORTTERM = {
+  period: 'shortterm',
+  label: 'August 2023',
+  snaps: ['Wk 1 Aug','Wk 2 Aug','Wk 3 Aug','Wk 4 Aug','End Aug'],
+  insights: [
+    'Week 1, August 2023: Markets open the month relatively flat. No major catalysts. This is what most weeks in investing look like, unremarkable.',
+    'Week 2, August 2023: A mild dip across equity markets, driven by global cues. Liquid and debt funds are completely unaffected. This is the point of holding assets matched to your timeline.',
+    'Week 3, August 2023: Equity partially recovers the previous week\'s dip. Gold edges up slightly. Debt funds continue their quiet, steady returns.',
+    'Week 4, August 2023: Markets end the week flat again. No dramatic story. For short-term money, this stability is the point, not excitement.',
+    'End of August 2023: The month ends largely where it started for equity. Debt and liquid funds have delivered small, predictable positive returns. This is what short-term investing is supposed to feel like.',
+  ],
+  returns: {
+    nifty:    [0, -0.8, 0.4, -0.3, 0.2],
+    midcap:   [0, -1.2, 0.6, -0.5, 0.3],
+    gold:     [0, 0.3, 0.5, 0.2, 0.8],
+    tech:     [0, -1.5, 0.8, -0.8, 0.1],
+    reliance: [0, -0.5, 0.3, -0.2, 0.4],
+    infosys:  [0, -1.0, 0.5, -0.6, 0.2],
+    liquid:   [0, 0.15, 0.15, 0.15, 0.15],
+    debt:     [0, 0.2, 0.2, 0.2, 0.2],
+  }
+};
+
+const SIM_EXPLORE = {
+  period: 'explore',
+  label: 'October 2024',
+  snaps: ['Oct 1','Oct 8','Oct 15','Oct 22','Oct 29'],
+  insights: [
+    'Markets opened lower across most sectors in early October 2024. FII selling put pressure on large caps. Gold held steady as investors moved toward safer assets.',
+    'The Nifty dipped further as global cues stayed weak. Tech funds fell the hardest. This is what a flight to safety looks like, equity out, gold in.',
+    'A brief stabilisation mid-month. Markets stopped falling but didn\'t recover meaningfully. Investors were watching and waiting.',
+    'Selling resumed in the final stretch of October. FIIs pulled out significant capital. Gold continued to hold its gains while equity extended losses.',
+    'October 2024 closed as a difficult month for Indian equity, Nifty down approximately 6.2%, mid-caps down more. Gold was the clear outperformer, up approximately 2%. This month taught three things: markets go down, asset classes diverge, and holding through it is harder than it sounds.',
+  ],
+  returns: {
+    nifty:    [0, -2.1, -1.8, -1.3, -6.2],
+    midcap:   [0, -2.8, -2.2, -1.9, -7.8],
+    gold:     [0, 0.5, 0.8, 0.4, 2.1],
+    tech:     [0, -3.2, -2.5, -2.1, -9.1],
+    reliance: [0, -1.8, -2.4, -1.2, -5.8],
+    infosys:  [0, -2.9, -1.6, -2.8, -7.2],
+    liquid:   [0, 0.15, 0.15, 0.15, 0.6],
+    debt:     [0, 0.2, 0.2, 0.2, 0.8],
+  }
+};
+
+// ─────────────────────────────────────
+// ASSET FILTERING
+// ─────────────────────────────────────
+function getAssetLists() {
+  const {goal, risk, horizon} = quiz;
+
+  // Effective horizon: if goal is not short-term but horizon is short, that's a mismatch
+  // and horizon wins for asset selection
+  const effectiveHorizon = (goal === 'short-term' || horizon === 'short') ? 'short' : horizon;
+
+  let recommended = [];
+  let extra = [];
+
+  if (goal === 'explore') {
+    recommended = ['nifty','gold','midcap'];
+    extra = ['tech','liquid','debt','reliance','infosys'];
+    return {recommended, extra};
+  }
+
+  if (effectiveHorizon === 'short') {
+    if (risk === 'conservative') {
+      recommended = ['liquid','gold'];
+      extra = ['debt','nifty','midcap','reliance','infosys','tech'];
+    } else if (risk === 'moderate') {
+      recommended = ['liquid','debt','gold'];
+      extra = ['nifty','midcap','reliance','infosys','tech'];
+    } else { // growth
+      recommended = ['liquid','gold'];
+      extra = ['nifty','debt','midcap','reliance','infosys','tech'];
+    }
+    return {recommended, extra};
+  }
+
+  if (effectiveHorizon === 'mid') {
+    if (risk === 'conservative') {
+      recommended = ['nifty','gold'];
+      extra = ['debt','midcap','liquid','reliance','infosys','tech'];
+    } else if (risk === 'moderate') {
+      recommended = ['nifty','gold','debt'];
+      extra = ['midcap','liquid','reliance','infosys','tech'];
+    } else {
+      recommended = ['nifty','midcap','gold'];
+      extra = ['tech','debt','liquid','reliance','infosys'];
+    }
+    return {recommended, extra};
+  }
+
+  // long horizon
+  if (risk === 'conservative') {
+    recommended = ['nifty','gold'];
+    extra = ['midcap','debt','liquid','reliance','infosys','tech'];
+  } else if (risk === 'moderate') {
+    recommended = ['nifty','midcap','gold'];
+    extra = ['tech','debt','liquid','reliance','infosys'];
+  } else {
+    recommended = ['nifty','midcap','gold','tech'];
+    extra = ['reliance','infosys','debt','liquid'];
+  }
+  return {recommended, extra};
+}
+
+function getAssetContext(id) {
+  const {goal, risk, horizon} = quiz;
+  const a = ASSETS[id];
+  const ctxKey = `${goal}|${risk}`;
+  const shortWarn = (goal === 'short-term' || horizon === 'short');
+
+  // Check specific warn conditions
+  if (id === 'reliance' || id === 'infosys') {
+    if (risk === 'conservative' || horizon === 'short') {
+      return {text: a.contexts['warn'] || '', level: 'strong-warn'};
+    }
+  }
+  if (id === 'nifty' && shortWarn && risk === 'growth') {
+    return {text: a.contexts['short-term|growth|strong-warn'] || '', level: 'strong-warn'};
+  }
+  if (id === 'nifty' && shortWarn && risk === 'moderate') {
+    return {text: a.contexts['short-term|moderate|warn'] || '', level: 'warn'};
+  }
+  if (id === 'midcap' && shortWarn) {
+    return {text: a.contexts['short-term|moderate|warn'] || '', level: 'warn'};
+  }
+  if (goal === 'explore') {
+    return {text: a.contexts['explore|any'] || a.contexts[`explore|${risk}`] || '', level: ''};
+  }
+  if (id === 'gold') {
+    if (shortWarn) return {text: a.contexts['short-term|any'] || '', level: ''};
+    return {text: a.contexts[`any|${risk}`] || '', level: ''};
+  }
+  return {text: a.contexts[ctxKey] || '', level: ''};
+}
+
+function renderAssetCard(id, isRecommended) {
+  const a = ASSETS[id];
+  const ctx = getAssetContext(id);
+  const riskLabel = {low:'Lower risk', mid:'Medium risk', high:'Higher risk'};
+  const riskClass = a.risk;
+
+  let cardClass = '';
+  if (ctx.level === 'warn') cardClass = 'warning';
+  if (ctx.level === 'strong-warn') cardClass = 'strong-warning';
+
+  return `
+    <div class="asset-card ${cardClass}" id="card-${id}" onclick="toggleAsset('${id}')">
+      <div class="asset-top">
+        <div class="asset-icon-wrap" style="background:${a.iconBg}">${a.icon}</div>
+        <div class="asset-header-info">
+          <div class="asset-name">${a.name}</div>
+          <div class="asset-type-line">${a.type}</div>
+        </div>
+        <div class="asset-check-wrap" id="check-${id}"></div>
+      </div>
+      <div class="asset-example">
+        <div class="example-label">e.g.</div>
+        <div class="example-text">${a.example}<em>${a.exampleSub}</em></div>
+      </div>
+      <div class="risk-row">
+        <span class="risk-tag risk-${riskClass}">${riskLabel[a.risk]}</span>
+      </div>
+      <div class="asset-desc-text">${a.desc}</div>
+      ${ctx.text ? `<div class="asset-context-line ${ctx.level}">${ctx.text}</div>` : ''}
+    </div>`;
+}
+
+// ─────────────────────────────────────
+// QUIZ LOGIC
+// ─────────────────────────────────────
+function selectQ(el) {
+  const group = el.dataset.g;
+  document.querySelectorAll(`[data-g="${group}"]`).forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  quiz[group] = el.dataset.v;
+  checkMismatch();
+  checkQuizComplete();
+}
+
+function checkMismatch() {
+  const box = document.getElementById('mismatch-box');
+  const {goal, horizon} = quiz;
+  const shouldShow = (goal === 'long-term' || goal === 'milestone') && horizon === 'short';
+  box.classList.toggle('show', shouldShow);
+}
+
+function toggleMismatchDetail() {
+  document.getElementById('mm-detail').classList.toggle('open');
+}
+
+function checkQuizComplete() {
+  const complete = quiz.goal && quiz.risk && quiz.horizon;
+  document.getElementById('quiz-next').disabled = !complete;
+}
+
+// ─────────────────────────────────────
+// ASSETS SCREEN
+// ─────────────────────────────────────
+const GOAL_LABELS = {
+  'long-term': 'Long-term wealth',
+  'milestone': 'Specific milestone',
+  'short-term': 'Short-term saving',
+  'explore': 'Just exploring',
+};
+
+function goToAssets() {
+  const pillText = GOAL_LABELS[quiz.goal] || quiz.goal;
+  document.querySelectorAll('[id^="pill-"]').forEach(p => {
+    const t = p.querySelector('.pill-text');
+    if (t) t.textContent = pillText;
+  });
+
+  const {recommended, extra} = getAssetLists();
+  document.getElementById('recommended-assets').innerHTML = recommended.map(id => renderAssetCard(id, true)).join('');
+  document.getElementById('extra-assets').innerHTML = extra.map(id => renderAssetCard(id, false)).join('');
+
+  selectedAssets = [];
+  updateAllocation();
+  document.getElementById('assets-next').disabled = true;
+  goTo('s-assets');
+}
+
+function toggleAsset(id) {
+  const card = document.getElementById(`card-${id}`);
+  const check = document.getElementById(`check-${id}`);
+  const idx = selectedAssets.indexOf(id);
+  if (idx === -1) {
+    selectedAssets.push(id);
+    card.classList.add('selected');
+    check.textContent = '✓';
+  } else {
+    selectedAssets.splice(idx, 1);
+    card.classList.remove('selected');
+    check.textContent = '';
+  }
+  updateAllocation();
+  document.getElementById('assets-next').disabled = selectedAssets.length < 2;
+}
+
+function updateAllocation() {
+  const box = document.getElementById('alloc-box');
+  const rows = document.getElementById('alloc-rows');
+  const hint = document.getElementById('alloc-hint');
+  if (selectedAssets.length === 0) { box.classList.remove('show'); return; }
+  box.classList.add('show');
+  hint.style.display = selectedAssets.length === 1 ? 'block' : 'none';
+  const pct = Math.floor(100 / selectedAssets.length);
+  rows.innerHTML = selectedAssets.map(id => {
+    const a = ASSETS[id];
+    return `
+      <div class="alloc-row">
+        <div class="alloc-name">${a.icon} ${a.name}</div>
+        <div class="alloc-track"><div class="alloc-fill" style="width:${pct}%"></div></div>
+        <div class="alloc-pct">${pct}%</div>
+      </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────
+// SIMULATION
+// ─────────────────────────────────────
+function getSimPeriod() {
+  const {goal, horizon} = quiz;
+  if (goal === 'explore') return SIM_EXPLORE;
+  if (goal === 'short-term' || horizon === 'short') return SIM_SHORTTERM;
+  return SIM_LONGTERM;
+}
+
+function goToSim() {
+  simPeriod = getSimPeriod();
+  snapLabels = simPeriod.snaps;
+  decisions = {};
+  currentSnap = 0;
+
+  const goalLabel = {
+    'long-term': 'long-term wealth',
+    'milestone': 'a specific milestone',
+    'short-term': 'short-term saving',
+    'explore': 'just exploring'
+  }[quiz.goal] || quiz.goal;
+
+  const titleEl = document.getElementById('sim-title');
+  const subEl = document.getElementById('sim-sub');
+  if (simPeriod.period === 'longterm') {
+    titleEl.textContent = 'Watch your portfolio across four years.';
+    subEl.textContent = 'Five snapshots across January 2020 to January 2024. At each snapshot: buy more, hold, or step out.';
+    document.getElementById('sim-period-note').textContent = 'Since you chose ' + goalLabel + ', we are simulating January 2020 to January 2024, 5 annual snapshots spanning a crash, a recovery, and a correction.';
+  } else if (simPeriod.period === 'shortterm') {
+    titleEl.textContent = 'Watch your portfolio across a month.';
+    subEl.textContent = 'Five weekly snapshots across August 2023. At each snapshot: buy more, hold, or step out.';
+    document.getElementById('sim-period-note').textContent = 'Since you chose ' + goalLabel + ', we are simulating August 2023, 5 weekly snapshots of a deliberately stable month matched to your shorter time horizon.';
+  } else {
+    titleEl.textContent = 'Watch your portfolio move.';
+    subEl.textContent = 'Five snapshots across October 2024. At each snapshot: buy more, hold, or step out.';
+    document.getElementById('sim-period-note').textContent = 'Since you are exploring, we are simulating October 2024, a month where equity fell and gold held, showing how different assets behave in the same period.';
+  }
+
+  renderSnapNav();
+  updateSimScreen();
+  goTo('s-sim');
+}
+
+function renderSnapNav() {
+  const nav = document.getElementById('snap-nav');
+  nav.innerHTML = snapLabels.map((label, i) => {
+    const cls = i === 0 ? 'active' : '';
+    return `<button class="snap-btn ${cls}" id="snap-${i}" onclick="jumpSnap(${i})">${label}</button>`;
+  }).join('');
+}
+
+function jumpSnap(i) {
+  if (i > currentSnap) return;
+  currentSnap = i;
+  updateSimScreen();
+  document.querySelectorAll('.snap-btn').forEach((b,idx) => {
+    b.classList.remove('active','done');
+    if (idx < currentSnap) b.classList.add('done');
+    if (idx === currentSnap) b.classList.add('active');
+  });
+  document.querySelectorAll('.dec-btn').forEach(b => b.classList.remove('chosen'));
+  if (decisions[currentSnap]) {
+    document.querySelector(`.dec-btn.${decisions[currentSnap]}`).classList.add('chosen');
+    if (decisions[currentSnap] === 'hold') document.getElementById('hold-note').classList.add('show');
+  }
+}
+
+function updateSimScreen() {
+  const pct = Math.floor(100 / selectedAssets.length);
+  let totalReturn = 0;
+  let holdingsHTML = '';
+
+  selectedAssets.forEach(id => {
+    const a = ASSETS[id];
+    const retPct = simPeriod.returns[id][currentSnap];
+    const allocation = 10000 * (pct / 100);
+    const change = allocation * (retPct / 100);
+    totalReturn += change;
+    const cls = retPct > 0 ? 'up' : retPct < 0 ? 'down' : 'flat';
+    const prefix = retPct > 0 ? '+' : '';
+    holdingsHTML += `
+      <div class="holding-row">
+        <div class="h-icon" style="background:${a.iconBg}">${a.icon}</div>
+        <div style="flex:1">
+          <div class="h-name">${a.name}</div>
+          <div class="h-sub">${pct}% allocation</div>
+        </div>
+        <div class="h-ret ${cls}">${prefix}${retPct.toFixed(1)}%</div>
+      </div>`;
+  });
+
+  const totalValue = 10000 + totalReturn;
+  const changePrefix = totalReturn > 0 ? '+' : '';
+  const changeCls = totalReturn > 0 ? 'up' : totalReturn < 0 ? 'down' : 'flat';
+  const changePct = ((totalReturn / 10000) * 100).toFixed(1);
+
+  document.getElementById('port-value').textContent = 'Rs. ' + Math.round(totalValue).toLocaleString('en-IN');
+  const changeEl = document.getElementById('port-change');
+  changeEl.className = `port-change ${changeCls}`;
+  if (currentSnap === 0) {
+    changeEl.textContent = 'Simulation starting, make your first decision below.';
+    changeEl.className = 'port-change flat';
+  } else {
+    changeEl.textContent = `${changePrefix}Rs. ${Math.round(Math.abs(totalReturn)).toLocaleString('en-IN')} (${changePrefix}${changePct}%) from start`;
+  }
+  document.getElementById('holdings').innerHTML = holdingsHTML;
+  document.getElementById('insight-text').textContent = simPeriod.insights[currentSnap];
+}
+
+function decide(choice) {
+  decisions[currentSnap] = choice;
+  document.querySelectorAll('.dec-btn').forEach(b => b.classList.remove('chosen'));
+  document.querySelector(`.dec-btn.${choice}`).classList.add('chosen');
+
+  const holdNote = document.getElementById('hold-note');
+  holdNote.classList.toggle('show', choice === 'hold');
+
+  const allDecided = Object.keys(decisions).length >= snapLabels.length;
+  document.getElementById('sim-next').disabled = !allDecided;
+
+  // Show next button if not on last snap
+  const nextBtn = document.getElementById('next-snap-btn');
+  if (currentSnap < snapLabels.length - 1) {
+    nextBtn.textContent = `Next snapshot →`;
+    nextBtn.classList.add('show');
+  } else {
+    nextBtn.classList.remove('show');
+  }
+}
+
+function advanceSnap() {
+  if (currentSnap >= snapLabels.length - 1) return;
+  currentSnap++;
+  document.querySelectorAll('.snap-btn').forEach((b,i) => {
+    b.classList.remove('active','done');
+    if (i < currentSnap) b.classList.add('done');
+    if (i === currentSnap) b.classList.add('active');
+  });
+  document.querySelectorAll('.dec-btn').forEach(b => b.classList.remove('chosen'));
+  document.getElementById('hold-note').classList.remove('show');
+  document.getElementById('next-snap-btn').classList.remove('show');
+  // Restore previous decision highlight if revisiting
+  if (decisions[currentSnap]) {
+    document.querySelector(`.dec-btn.${decisions[currentSnap]}`).classList.add('chosen');
+    if (decisions[currentSnap] === 'hold') document.getElementById('hold-note').classList.add('show');
+    if (currentSnap < snapLabels.length - 1) {
+      document.getElementById('next-snap-btn').classList.add('show');
+    }
+  }
+  updateSimScreen();
+  try {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } catch(e) {
+    window.scrollTo(0, 0);
+  }
+}
+
+// ─────────────────────────────────────
+// REVEAL
+// ─────────────────────────────────────
+function goToReveal() {
+  const pct = Math.floor(100 / selectedAssets.length);
+  let totalReturn = 0;
+  selectedAssets.forEach(id => {
+    const finalRet = simPeriod.returns[id][snapLabels.length - 1];
+    totalReturn += 10000 * (pct / 100) * (finalRet / 100);
+  });
+
+  const stayCount = Object.values(decisions).filter(d => d === 'stay' || d === 'hold' || d === 'buy').length;
+  const withdrawCount = Object.values(decisions).filter(d => d === 'withdraw').length;
+  const holdCount = Object.values(decisions).filter(d => d === 'hold').length;
+  const buyCount = Object.values(decisions).filter(d => d === 'buy').length;
+  const totalSnaps = snapLabels.length;
+  const isUp = totalReturn >= 0;
+  const isSingleAsset = selectedAssets.length === 1;
+
+  // Behaviour headline
+  let behaviourText = '';
+  if (withdrawCount === 0 && holdCount === totalSnaps) {
+    behaviourText = `You held through all ${totalSnaps} snapshots.`;
+  } else if (withdrawCount === 0 && buyCount > 0) {
+    behaviourText = `You kept investing through all ${totalSnaps} snapshots.`;
+  } else if (withdrawCount === totalSnaps) {
+    behaviourText = `You chose to step out at every snapshot.`;
+  } else if (withdrawCount > 0) {
+    behaviourText = `You stayed in for ${stayCount} snapshot${stayCount !== 1 ? 's' : ''} and stepped out at ${withdrawCount}.`;
+  } else {
+    behaviourText = `You stayed invested through all ${totalSnaps} snapshots.`;
+  }
+  document.getElementById('reveal-behaviour').textContent = behaviourText;
+
+  // Amount — soften if negative
+  const amountEl = document.getElementById('reveal-amount');
+  const prefix = isUp ? '+' : '-';
+  amountEl.textContent = `${prefix}Rs. ${Math.round(Math.abs(totalReturn)).toLocaleString('en-IN')}`;
+  if (isUp) {
+    amountEl.style.color = 'var(--green-dark)';
+    amountEl.classList.remove('is-negative');
+  } else {
+    amountEl.classList.add('is-negative');
+  }
+
+  // Context
+  const contextEl = document.getElementById('reveal-context');
+  if (isSingleAsset) {
+    const a = ASSETS[selectedAssets[0]];
+    contextEl.textContent = `You put everything into ${a.name}. In ${simPeriod.label}, it ${isUp ? 'returned' : 'moved'} ${prefix}${Math.abs((totalReturn/10000)*100).toFixed(1)}%.`;
+  } else {
+    const niftyFinal = simPeriod.returns['nifty'] ? simPeriod.returns['nifty'][snapLabels.length-1] : null;
+    if (niftyFinal !== null && !isUp && (totalReturn/100) > niftyFinal) {
+      contextEl.textContent = `Your portfolio moved, but less than the Nifty 50 (${niftyFinal.toFixed(1)}%). Diversification reduced your drawdown.`;
+    } else {
+      contextEl.textContent = `Across ${totalSnaps} snapshots in ${simPeriod.label}.`;
+    }
+  }
+
+  // Goal box
+  const goalBoxEl = document.getElementById('reveal-goal-box');
+  const goalMessages = {
+    'long-term': isSingleAsset
+      ? `You chose one asset and watched it move through four years of real market data, including a crash and a recovery. A single asset gives you an unambiguous experience of how that instrument behaves. Most long-term investors eventually hold more than one type, not because it always improves returns, but because it reduces the chance that one bad period in one asset defines the whole portfolio.`
+      : isUp
+        ? `<strong>For your goal of long-term wealth:</strong> a positive return across four years that included a 38% crash and a full recovery is exactly the evidence for why staying invested works. Markets go down. They have historically come back.`
+        : `<strong>For your goal of long-term wealth:</strong> a down period within a 4-year window is not a signal to leave. The Nifty 50 has never failed to recover from a crash over a 5-year period in Indian market history. Time in the market is the mechanism, not timing it.`,
+    'milestone': isUp
+      ? `<strong>For your milestone goal:</strong> positive returns across this period show that patient investing can work toward a specific target. The asset mix you chose matters as much as the timeline.`
+      : `<strong>For your milestone goal:</strong> a down period this close to a milestone is a risk, which is why asset allocation shifts toward stability as your goal approaches. Starting early gives you time to absorb corrections like this one.`,
+    'short-term': isSingleAsset
+      ? `You chose one asset for a short-term goal. In August 2023, it ${isUp ? 'delivered' : 'moved by'} ${Math.abs((totalReturn/10000)*100).toFixed(1)}%. For money you need back within a year, asset choice matters more than market timing.`
+      : `<strong>For your short-term goal:</strong> August 2023 was a deliberately stable month. That stability is what short-term investing should feel like, not exciting, but not alarming. The lesson is asset matching, not market watching.`,
+    'explore': `<strong>You just experienced what real investors experience.</strong> The discomfort during down days, the temptation to step out, the question of whether holding is the right call, these are real psychological states. The investors who build wealth over time learn to sit with them. You just practiced that.`,
+  };
+  goalBoxEl.innerHTML = goalMessages[quiz.goal] || '';
+
+  // Reframe card — only shows on negative returns, contextualised by goal + period
+  const reframeCard = document.getElementById('reframe-card');
+  const reframeText = document.getElementById('reframe-text');
+  if (!isUp) {
+    const lossPct = Math.abs((totalReturn / 10000) * 100).toFixed(1);
+    const reframes = {
+      'long-term': {
+        'longterm': `The period you just simulated, January 2020 to January 2024, included the COVID crash of March 2020 when the Nifty fell 38% in six weeks. Investors who sold during that crash locked in their losses permanently. Investors who held recovered fully within six months and went on to see new highs by 2022. <strong>A negative number in a simulation that includes a once-in-a-decade crash is not a verdict on long-term investing.</strong> It is what long-term investing looks like from the inside, in the years when it is hardest.`,
+        'default': `A negative return within a multi-year window is not the same as a failed investment. The Nifty 50 has historically delivered positive returns over any rolling 7-year period in Indian market history. The period you experienced is one chapter, not the whole story.`
+      },
+      'milestone': {
+        'longterm': `This simulation included one of the most volatile four-year stretches in recent Indian market history. A down result here reflects a specific combination of assets and timing, not a permanent outcome. For milestone goals, the fix is not to stop investing, it is to shift into more stable assets as your deadline approaches.`,
+        'default': `A negative result in this simulation is a signal about asset-goal fit, not about investing itself. The closer your milestone, the more your portfolio should lean toward stability over growth. That is not a loss. It is allocation.`
+      },
+      'short-term': {
+        'shortterm': `August 2023 was chosen as a deliberately calm month for short-term simulations. If you still saw a negative result, it almost certainly means the assets you chose carry more volatility than a short time horizon can absorb. The liquid fund and debt fund in the same simulation returned small positive amounts every week. That gap is the lesson, not the loss.`,
+        'default': `For money needed back within a year, a negative simulation result is a direct signal about asset matching. Equity can fall 20-38% in a single year. Liquid and debt funds rarely do. The number you saw is not about bad timing. It is about the instrument.`
+      },
+      'explore': {
+        'explore': `October 2024 was a difficult month for Indian equity. The Nifty fell approximately 6.2%, mid-caps fell further, and gold was the only major asset that ended positive. That divergence is exactly what makes this period useful to experience. <strong>Negative returns in one asset class during one month are entirely normal.</strong> What matters is understanding why they happened and what a different allocation would have looked like in the same period.`,
+        'default': `A negative result is one of the most useful things this simulation can show you. It means you experienced what market volatility actually feels like before any real money was involved. The discomfort you felt is real. The loss is not.`
+      }
+    };
+
+    const goalKey = quiz.goal || 'explore';
+    const periodKey = simPeriod ? simPeriod.period : 'default';
+    const goalReframes = reframes[goalKey] || reframes['explore'];
+    const message = goalReframes[periodKey] || goalReframes['default'];
+
+    reframeText.innerHTML = message;
+    reframeCard.classList.add('show');
+  } else {
+    reframeCard.classList.remove('show');
+    reframeText.innerHTML = '';
+  }
+
+  // Decisions recap
+  const recapEl = document.getElementById('recap-rows');
+  const decisionLabels = {
+    stay: 'Stayed invested',
+    hold: 'Held position',
+    buy: 'Bought more',
+    withdraw: 'Stepped out',
+  };
+  recapEl.innerHTML = snapLabels.map((label, i) => {
+    const d = decisions[i] || 'hold';
+    const cls = d === 'withdraw' ? 'withdraw' : d;
+    return `
+      <div class="recap-row">
+        <div class="recap-snap">${label}</div>
+        <div class="recap-choice ${cls}">${decisionLabels[d] || d}</div>
+      </div>`;
+  }).join('');
+
+  const pillText = GOAL_LABELS[quiz.goal] || quiz.goal;
+  document.getElementById('pill-reveal-text').textContent = pillText;
+
+  goTo('s-reveal');
+}
+
+// ─────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  try {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } catch(e) {
+    window.scrollTo(0, 0);
+  }
+}
+
+function restart() {
+  quiz.goal = null; quiz.risk = null; quiz.horizon = null;
+  selectedAssets = [];
+  decisions = {};
+  currentSnap = 0;
+  simPeriod = null;
+  snapLabels = [];
+  document.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('quiz-next').disabled = true;
+  document.getElementById('mismatch-box').classList.remove('show');
+  document.getElementById('mm-detail').classList.remove('open');
+  document.getElementById('recommended-assets').innerHTML = '';
+  document.getElementById('extra-assets').innerHTML = '';
+  document.getElementById('alloc-box').classList.remove('show');
+  document.getElementById('alloc-rows').innerHTML = '';
+  document.getElementById('assets-next').disabled = true;
+  document.getElementById('next-snap-btn').classList.remove('show');
+  document.getElementById('hold-note').classList.remove('show');
+  goTo('s-intro');
+}
+</script>
+</body>
+</html>
